@@ -89,6 +89,21 @@ const routes = [
     component: Crowd,
     secondary: true,
   },
+  {
+    name: "All Products",
+    layout: "/admin",
+    path: "/crowd",
+    icon: (
+      <Icon
+        as={MdOutlineShoppingCart}
+        width="20px"
+        height="20px"
+        color="inherit"
+      />
+    ),
+    component: Crowd,
+    secondary: true,
+  },
   // {
   //   name: "Data Tables",
   //   layout: "/admin",
