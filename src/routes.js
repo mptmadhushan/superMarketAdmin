@@ -93,7 +93,7 @@ const routes = [
   {
     name: "All Products",
     layout: "/admin",
-    path: "/crowd",
+    path: "/all-products",
     icon: (
       <Icon
         as={MdOutlineShoppingCart}

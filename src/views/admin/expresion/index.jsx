@@ -42,15 +42,15 @@ export default function Marketplace() {
     fetch(imageSrc)
       .then((res) => res.blob())
       .then((blob) => {
-        const file = new File([blob], "File name", { type: "image/png" });
+        const file = new File([blob], "Filename", { type: "image/png" });
         console.log("🚀 ~ file: index.js ~ line 84 ~ .then ~ file", file);
         setSelectedFile(file);
-        handleSubmit();
+        handleSubmit(file);
       });
   }, [webcamRef]);
-  const handleSubmit = async () => {
+  const handleSubmit = async (file) => {
     const formData = new FormData();
-    formData.append("image", selectedFile);
+    formData.append("image", file);
     formData.append("camera_id", 1);
     try {
       const response = await axios({

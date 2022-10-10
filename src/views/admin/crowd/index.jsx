@@ -19,6 +19,7 @@ export default function Marketplace() {
   const textColor = useColorModeValue("secondaryGray.900", "white");
   const textColorBrand = useColorModeValue("brand.500", "white");
   const [selectedFile, setSelectedFile] = React.useState(null);
+  const [crowd, setCrowd] = React.useState(null);
   const [respo, setRespo] = React.useState({
     alert: true,
     predictions: "with_mask",
@@ -27,6 +28,10 @@ export default function Marketplace() {
   const MINUTE_MS = 6000;
 
   useEffect(() => {
+    fetch("http://127.0.0.1:8000/api/v1.0/crowd-forecast/")
+      .then((response) => response.json())
+      .then((data) => setCrowd(data));
+
     const interval = setInterval(() => {
       capture();
     }, MINUTE_MS);
@@ -39,15 +44,15 @@ export default function Marketplace() {
     fetch(imageSrc)
       .then((res) => res.blob())
       .then((blob) => {
-        const file = new File([blob], "File name", { type: "image/png" });
+        const file = new File([blob], "Filename", { type: "image/png" });
         console.log("🚀 ~ file: index.js ~ line 84 ~ .then ~ file", file);
         setSelectedFile(file);
-        handleSubmit();
+        handleSubmit(file);
       });
   }, [webcamRef]);
-  const handleSubmit = async () => {
+  const handleSubmit = async (file) => {
     const formData = new FormData();
-    formData.append("image", selectedFile);
+    formData.append("image", file);
     try {
       const response = await axios({
         method: "post",

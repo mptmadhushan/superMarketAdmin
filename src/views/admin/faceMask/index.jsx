@@ -16,7 +16,7 @@ import axios from "axios";
 import Webcam from "react-webcam";
 export default function Marketplace() {
   // Chakra Color Mode
-const textColor = useColorModeValue("secondaryGray.900", "white");
+  const textColor = useColorModeValue("secondaryGray.900", "white");
   const textColorBrand = useColorModeValue("brand.500", "white");
   const [selectedFile, setSelectedFile] = React.useState(null);
   const [respo, setRespo] = React.useState({
@@ -42,12 +42,12 @@ const textColor = useColorModeValue("secondaryGray.900", "white");
         const file = new File([blob], "File name", { type: "image/png" });
         console.log("🚀 ~ file: index.js ~ line 84 ~ .then ~ file", file);
         setSelectedFile(file);
-        handleSubmit();
+        handleSubmit(file);
       });
   }, [webcamRef]);
-  const handleSubmit = async () => {
+  const handleSubmit = async (file) => {
     const formData = new FormData();
-    formData.append("image", selectedFile);
+    formData.append("image", file);
     try {
       const response = await axios({
         method: "post",
