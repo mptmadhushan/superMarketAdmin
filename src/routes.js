@@ -15,6 +15,7 @@ import FaceMask from "views/admin/faceMask";
 import Behavior from "views/admin/behavior";
 import Crowd from "views/admin/crowd";
 import Expression from "views/admin/expresion";
+import AllProduct from "views/admin/AllOrders";
 
 import DataTables from "views/admin/dataTables";
 
@@ -101,7 +102,7 @@ const routes = [
         color="inherit"
       />
     ),
-    component: Crowd,
+    component: AllProduct,
     secondary: true,
   },
   // {
