@@ -53,7 +53,10 @@ export default function Marketplace() {
         method: "post",
         url: "http://127.0.0.1:8000/api/v1.0/mask-predictions/",
         data: formData,
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: {
+          "Content-Type": "multipart/form-data",
+          "Access-Control-Allow-Origin": "*",
+        },
       });
 
       setRespo({
