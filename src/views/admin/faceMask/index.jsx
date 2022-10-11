@@ -18,7 +18,7 @@ export default function Marketplace() {
   // Chakra Color Mode
   const textColor = useColorModeValue("secondaryGray.900", "white");
   const textColorBrand = useColorModeValue("brand.500", "white");
-  const [selectedFile, setSelectedFile] = React.useState(null);
+
   const [respo, setRespo] = React.useState({
     alert: true,
     predictions: "with_mask",
@@ -41,7 +41,6 @@ export default function Marketplace() {
         const file = new File([blob], "File name", { type: "image/png" });
         console.log("🚀 ~ file: index.js ~ line 84 ~ .then ~ file", file);
         setSelectedFile(file);
-        handleSubmit(file);
       });
   }, [webcamRef]);
   const [image, setImage] = React.useState({ preview: "", raw: "" });
@@ -52,60 +51,39 @@ export default function Marketplace() {
         preview: URL.createObjectURL(e.target.files[0]),
         raw: e.target.files[0],
       });
-
-      const img = e.target.files[0];
-      handleUpload(img);
     }
   };
 
-  const handleUpload = async (img) => {
-    const formData = new FormData();
-    formData.append("image", img);
-    try {
-      const response = await axios({
-        method: "post",
-        url: "http://127.0.0.1:8000/api/v1.0/mask-predictions/",
-        data: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-          "Access-Control-Allow-Origin": "*",
-        },
-      });
-
-      setRespo(response);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleSubmit = async (file) => {
-    const formData = new FormData();
-    formData.append("image", file);
-    try {
-      const response = await axios({
-        method: "post",
-        url: "http://127.0.0.1:8000/api/v1.0/mask-predictions/",
-        data: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-          "Access-Control-Allow-Origin": "*",
-        },
-      });
-
-      setRespo({
-        alert: true,
-        predictions: "with_mask",
-        detail: "Not wearing a mask!",
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const videoConstraints = {
     width: 1280,
     height: 720,
     facingMode: "user",
   };
+  const [selectedFile, setSelectedFile] = React.useState();
+  const [isFilePicked, setIsFilePicked] = React.useState(false);
+
+  const changeHandler = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
+  const handleSubmission = () => {
+    const formData = new FormData();
+
+    formData.append("image", selectedFile);
+
+    fetch("http://127.0.0.1:8000/api/v1.0/mask-predictions/", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        console.log("Success:", result);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
   return (
     <Box pt={{ base: "180px", md: "80px", xl: "80px" }}>
       {/* Main Fields */}
@@ -119,10 +97,8 @@ export default function Marketplace() {
           flexDirection="column"
           gridArea={{ xl: "1 / 1 / 2 / 3", "2xl": "1 / 1 / 2 / 2" }}
         >
-          <p>hello</p>
-
-          <input type="file" id="upload-button" onChange={handleChange} />
-          <button onClick={handleUpload}>Upload</button>
+          <input type="file" name="file" onChange={changeHandler} />
+          <Button onClick={handleSubmission}>Submit</Button>
           <Webcam
             audio={false}
             height={720}
