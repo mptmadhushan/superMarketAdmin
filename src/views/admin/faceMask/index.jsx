@@ -27,11 +27,10 @@ export default function Marketplace() {
   const MINUTE_MS = 6000;
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      capture();
-    }, MINUTE_MS);
-
-    return () => clearInterval(interval);
+    // const interval = setInterval(() => {
+    //   capture();
+    // }, MINUTE_MS);
+    // return () => clearInterval(interval);
   }, []);
   const webcamRef = React.useRef(null);
   const capture = React.useCallback(() => {
@@ -45,6 +44,40 @@ export default function Marketplace() {
         handleSubmit(file);
       });
   }, [webcamRef]);
+  const [image, setImage] = React.useState({ preview: "", raw: "" });
+
+  const handleChange = (e) => {
+    if (e.target.files.length) {
+      setImage({
+        preview: URL.createObjectURL(e.target.files[0]),
+        raw: e.target.files[0],
+      });
+
+      const img = e.target.files[0];
+      handleUpload(img);
+    }
+  };
+
+  const handleUpload = async (img) => {
+    const formData = new FormData();
+    formData.append("image", img);
+    try {
+      const response = await axios({
+        method: "post",
+        url: "http://127.0.0.1:8000/api/v1.0/mask-predictions/",
+        data: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+          "Access-Control-Allow-Origin": "*",
+        },
+      });
+
+      setRespo(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleSubmit = async (file) => {
     const formData = new FormData();
     formData.append("image", file);
@@ -86,6 +119,10 @@ export default function Marketplace() {
           flexDirection="column"
           gridArea={{ xl: "1 / 1 / 2 / 3", "2xl": "1 / 1 / 2 / 2" }}
         >
+          <p>hello</p>
+
+          <input type="file" id="upload-button" onChange={handleChange} />
+          <button onClick={handleUpload}>Upload</button>
           <Webcam
             audio={false}
             height={720}

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 
 // Chakra imports
 import {
@@ -88,6 +88,13 @@ export default function Marketplace() {
         handleSubmit();
       });
   }, [webcamRef]);
+  const [imgfile, uploadimg] = useState([])
+  	console.log("Image FIles",imgfile);
+  const imgFilehandler = (e) => {
+    if (e.target.files.length !== 0) {
+      uploadimg(imgfile => [...imgfile, URL.createObjectURL(e.target.files[0])])
+    }
+  }
   const handleSubmit = async () => {
     const formData = new FormData();
     formData.append("image", selectedFile);
