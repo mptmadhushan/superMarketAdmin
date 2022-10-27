@@ -24,7 +24,7 @@ export default function Marketplace() {
   const [selectedFile, setSelectedFile] = React.useState(null);
   const [respo, setRespo] = React.useState({
     id: 5,
-    top_3_feedback: ["surprise", "happy", "sadness"],
+    top_3_feedback: ["none", "none", "none"],
     camera: 1,
   });
   const MINUTE_MS = 6000;
@@ -45,25 +45,26 @@ export default function Marketplace() {
         const file = new File([blob], "Filename", { type: "image/png" });
         console.log("🚀 ~ file: index.js ~ line 84 ~ .then ~ file", file);
         setSelectedFile(file);
-        handleSubmit(file);
+        handleSubmission(file);
       });
   }, [webcamRef]);
-  const handleSubmit = async (file) => {
+  const handleSubmission = (file) => {
     const formData = new FormData();
+
     formData.append("image", file);
     formData.append("camera_id", 1);
-    try {
-      const response = await axios({
-        method: "post",
-        url: "http://127.0.0.1:8000/api/v1.0/fraud-prediction/",
-        data: formData,
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+    // formData.append("image", selectedFile);
 
-      setRespo(response);
-    } catch (error) {
-      console.log(error);
-    }
+    axios
+      .post(
+        "http://ec2-54-242-87-59.compute-1.amazonaws.com:8000/api/v1.0/facial-expresion-prediction/",
+        formData
+      )
+      .then((res) => {
+        console.log(res);
+        console.log(res.data);
+        setRespo(res.data);
+      });
   };
   const videoConstraints = {
     width: 1280,

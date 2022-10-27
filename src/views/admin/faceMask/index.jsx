@@ -22,15 +22,15 @@ export default function Marketplace() {
   const [respo, setRespo] = React.useState({
     alert: true,
     predictions: "with_mask",
-    detail: "Not wearing a mask!",
+    detail: "Scanning.!",
   });
   const MINUTE_MS = 6000;
 
   useEffect(() => {
-    // const interval = setInterval(() => {
-    //   capture();
-    // }, MINUTE_MS);
-    // return () => clearInterval(interval);
+    const interval = setInterval(() => {
+      capture();
+    }, MINUTE_MS);
+    return () => clearInterval(interval);
   }, []);
   const webcamRef = React.useRef(null);
   const capture = React.useCallback(() => {
@@ -41,18 +41,10 @@ export default function Marketplace() {
         const file = new File([blob], "File name", { type: "image/png" });
         console.log("🚀 ~ file: index.js ~ line 84 ~ .then ~ file", file);
         setSelectedFile(file);
+        handleSubmission(file);
       });
   }, [webcamRef]);
-  const [image, setImage] = React.useState({ preview: "", raw: "" });
-
-  const handleChange = (e) => {
-    if (e.target.files.length) {
-      setImage({
-        preview: URL.createObjectURL(e.target.files[0]),
-        raw: e.target.files[0],
-      });
-    }
-  };
+  
 
   const videoConstraints = {
     width: 1280,
@@ -60,27 +52,26 @@ export default function Marketplace() {
     facingMode: "user",
   };
   const [selectedFile, setSelectedFile] = React.useState();
-  const [isFilePicked, setIsFilePicked] = React.useState(false);
 
   const changeHandler = (event) => {
     setSelectedFile(event.target.files[0]);
   };
 
-  const handleSubmission = () => {
+  const handleSubmission = (file) => {
     const formData = new FormData();
 
-    formData.append("image", selectedFile);
+    formData.append("image", file);
+    // formData.append("image", selectedFile);
 
-    fetch("http://127.0.0.1:8000/api/v1.0/mask-predictions/", {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        console.log("Success:", result);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
+    axios
+      .post(
+        "http://ec2-54-242-87-59.compute-1.amazonaws.com:8000/api/v1.0/mask-predictions/",
+        formData
+      )
+      .then((res) => {
+        console.log(res);
+        console.log(res.data);
+        setRespo(res.data);
       });
   };
 

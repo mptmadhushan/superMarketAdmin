@@ -6,10 +6,8 @@ import {
   Button,
   Flex,
   Grid,
-  Link,
   Text,
   useColorModeValue,
-  SimpleGrid,
 } from "@chakra-ui/react";
 import axios from "axios";
 
@@ -18,16 +16,15 @@ import HistoryItem from "views/admin/behavior/components/HistoryItem";
 import Card from "components/card/Card.js";
 
 export default function Marketplace() {
-  // Chakra Color Mode
   const textColor = useColorModeValue("secondaryGray.900", "white");
   const textColorBrand = useColorModeValue("brand.500", "white");
   const [selectedFile, setSelectedFile] = React.useState(null);
   const [respo, setRespo] = React.useState({
     incident: true,
-    top_3_predictions: ["Stealing", "Robbery", "Burglary"],
+    top_3_predictions: ["none", "none", "none"],
     detail: {
       id: 7,
-      type: "Risky Behaviour",
+      type: "none",
       media_file: "/media/uploads/1243dcv_Td0RdMp.PNG",
       date_time: "2022-10-09",
       camera_id: 1,
@@ -51,25 +48,25 @@ export default function Marketplace() {
         const file = new File([blob], "Filename", { type: "image/png" });
         console.log("🚀 ~ file: index.js ~ line 84 ~ .then ~ file", file);
         setSelectedFile(file);
-        handleSubmit(file);
+        handleSubmission(file);
       });
   }, [webcamRef]);
-  const handleSubmit = async (file) => {
+  const handleSubmission = (file) => {
     const formData = new FormData();
+
     formData.append("image", file);
     formData.append("camera_id", 1);
-    try {
-      const response = await axios({
-        method: "post",
-        url: "http://127.0.0.1:8000/api/v1.0/fraud-prediction/",
-        data: formData,
-        headers: { "Content-Type": "multipart/form-data" },
-      });
 
-      setRespo(response);
-    } catch (error) {
-      console.log(error);
-    }
+    axios
+      .post(
+        "http://ec2-54-242-87-59.compute-1.amazonaws.com:8000/api/v1.0/fraud-prediction/",
+        formData
+      )
+      .then((res) => {
+        console.log(res);
+        console.log(res.data);
+        setRespo(res.data);
+      });
   };
   const videoConstraints = {
     width: 1280,
@@ -107,7 +104,7 @@ export default function Marketplace() {
               align={{ base: "start", md: "center" }}
             >
               <Text color={textColor} fontSize="2xl" ms="24px" fontWeight="700">
-                {respo.detail.type}
+                Behavior : {respo.detail.type}
               </Text>
             </Flex>
           </Flex>

@@ -21,59 +21,61 @@ export default function Marketplace() {
   const [selectedFile, setSelectedFile] = React.useState(null);
   const [crowd, setCrowd] = React.useState(null);
   const [respo, setRespo] = React.useState({
-    alert: true,
-    predictions: "with_mask",
-    detail: "Crowd",
+    crowd_count: 0,
   });
   const MINUTE_MS = 6000;
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/v1.0/crowd-forecast/")
-      .then((response) => response.json())
-      .then((data) => setCrowd(data));
-
+    getForcast();
     const interval = setInterval(() => {
       capture();
     }, MINUTE_MS);
-
     return () => clearInterval(interval);
   }, []);
+  const getForcast = () => {
+    axios
+      .get(
+        "http://ec2-54-242-87-59.compute-1.amazonaws.com:8000/api/v1.0/crowd-forecast"
+      )
+      .then((res) => {
+        console.log(res);
+        console.log(res.data);
+      });
+  };
   const webcamRef = React.useRef(null);
   const capture = React.useCallback(() => {
     const imageSrc = webcamRef.current.getScreenshot();
     fetch(imageSrc)
       .then((res) => res.blob())
       .then((blob) => {
-        const file = new File([blob], "Filename", { type: "image/png" });
+        const file = new File([blob], "File name", { type: "image/png" });
         console.log("🚀 ~ file: index.js ~ line 84 ~ .then ~ file", file);
         setSelectedFile(file);
-        handleSubmit(file);
+        handleSubmission(file);
       });
   }, [webcamRef]);
-  const handleSubmit = async (file) => {
-    const formData = new FormData();
-    formData.append("image", file);
-    try {
-      const response = await axios({
-        method: "post",
-        url: "http://127.0.0.1:8000/api/v1.0/crowd/",
-        data: formData,
-        headers: { "Content-Type": "multipart/form-data" },
-      });
 
-      setRespo({
-        alert: true,
-        predictions: "with_mask",
-        detail: "Not wearing a mask!",
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const videoConstraints = {
     width: 1280,
     height: 720,
     facingMode: "user",
+  };
+  const handleSubmission = (file) => {
+    const formData = new FormData();
+
+    formData.append("image", file);
+    // formData.append("image", selectedFile);
+
+    axios
+      .post(
+        "http://ec2-54-242-87-59.compute-1.amazonaws.com:8000/api/v1.0/crowd/",
+        formData
+      )
+      .then((res) => {
+        console.log(res);
+        console.log(res.data);
+        setRespo(res.data.detail);
+      });
   };
   return (
     <Box pt={{ base: "180px", md: "80px", xl: "80px" }}>
@@ -106,7 +108,7 @@ export default function Marketplace() {
               align={{ base: "start", md: "center" }}
             >
               <Text color={textColor} fontSize="2xl" ms="24px" fontWeight="700">
-                {respo.detail}
+                crowd count {respo.crowd_count}
               </Text>
             </Flex>
           </Flex>
