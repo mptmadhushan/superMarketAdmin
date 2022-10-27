@@ -73,6 +73,22 @@ export default function Marketplace() {
         console.log(res.data);
         setRespo(res.data);
       });
+  };const handleSubmissionFil = () => {
+    const formData = new FormData();
+
+    // formData.append("image", file);
+    formData.append("image", selectedFile);
+
+    axios
+      .post(
+        "http://ec2-54-242-87-59.compute-1.amazonaws.com:8000/api/v1.0/mask-predictions/",
+        formData
+      )
+      .then((res) => {
+        console.log(res);
+        console.log(res.data);
+        setRespo(res.data);
+      });
   };
 
   return (
@@ -89,7 +105,7 @@ export default function Marketplace() {
           gridArea={{ xl: "1 / 1 / 2 / 3", "2xl": "1 / 1 / 2 / 2" }}
         >
           <input type="file" name="file" onChange={changeHandler} />
-          <Button onClick={handleSubmission}>Submit</Button>
+          <Button onClick={handleSubmissionFil}>Submit</Button>
           <Webcam
             audio={false}
             height={720}

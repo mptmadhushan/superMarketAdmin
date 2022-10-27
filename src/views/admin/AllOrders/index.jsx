@@ -15,18 +15,43 @@ import axios from "axios";
 import WeeklyRevenue from "views/admin/crowd/components/WeeklyRevenue";
 import Webcam from "react-webcam";
 import HistoryItem from "views/admin/AllOrders/components/HistoryItem";
-
+import swal from "sweetalert";
 export default function Marketplace() {
   // Chakra Color Mode
   const textColor = useColorModeValue("secondaryGray.900", "white");
   const textColorBrand = useColorModeValue("brand.500", "white");
   const [selectedFile, setSelectedFile] = React.useState(null);
   const [respo, setRespo] = React.useState([]);
+  const [orders, setOrders] = React.useState([]);
+  const [discount, setDiscount] = React.useState([]);
   const MINUTE_MS = 6000;
 
   useEffect(() => {
     getProducts();
   }, []);
+  const getOrders = () => {
+    axios
+      .get(
+        "http://ec2-54-242-87-59.compute-1.amazonaws.com:8000/api/v1.0/order/1/"
+      )
+      .then((res) => {
+        console.log(res);
+        console.log(res.data);
+        setOrders(res.data.detail.product);
+      });
+  };
+  const getDiscount = () => {
+    axios
+      .get(
+        "http://ec2-54-242-87-59.compute-1.amazonaws.com:8000/api/v1.0/discount/1/"
+      )
+      .then((res) => {
+        console.log(res);
+        console.log(res.data);
+        swal("loyalty discoun!", "added successfuly", "success");
+        setDiscount(res.data);
+      });
+  };
   const getProducts = () => {
     axios
       .get(
@@ -38,7 +63,6 @@ export default function Marketplace() {
         setRespo(res.data);
       });
   };
-
   const addOrder = async (id) => {
     const formData = new FormData();
     formData.append("product_id", id);
@@ -51,6 +75,8 @@ export default function Marketplace() {
         headers: { "Content-Type": "multipart/form-data" },
       });
       console.log("response", response);
+      swal("Product added!", "added successfuly", "success");
+      getOrders();
     } catch (error) {
       console.log(error);
     }
@@ -106,6 +132,29 @@ export default function Marketplace() {
               <HistoryItem name={text.name} date={text.price} />
             </Flex>
           ))}
+          {orders.length > 0 && <h1>Order Details</h1>}
+          {orders.map((text) => (
+            <Flex>
+              <HistoryItem name={text.name} date={text.price} />
+            </Flex>
+          ))}
+          {orders.length > 0 && (
+            <Button
+              mt="10px"
+              onClick={() => {
+                getDiscount();
+              }}
+              fontSize="sm"
+              fontWeight="500"
+              color="green"
+              borderRadius="7px"
+            >
+              Get Discount
+            </Button>
+          )}
+          {discount.loyalty_discount && (
+            <p>loyalty discount: {discount.loyalty_discount}</p>
+          )}
         </Flex>
       </Grid>
     </Box>
