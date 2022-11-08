@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   Flex,
+  Input,
   Grid,
   Text,
   useColorModeValue,
@@ -34,7 +35,7 @@ export default function Marketplace() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      capture();
+      // capture();
     }, MINUTE_MS);
 
     return () => clearInterval(interval);
@@ -68,6 +69,26 @@ export default function Marketplace() {
         setRespo(res.data);
       });
   };
+  const handleSubmissionVideo = () => {
+    const formData = new FormData();
+
+    formData.append("camera_id", 1);
+    formData.append("video", selectedFile);
+
+    axios
+      .post(
+        "http://ec2-54-242-87-59.compute-1.amazonaws.com:8000/api/v1.0/fraud-prediction-by-video/",
+        formData
+      )
+      .then((res) => {
+        console.log(res);
+        console.log(res.data);
+        setRespo(res.data);
+      });
+  };
+  const changeHandler = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
   const videoConstraints = {
     width: 1280,
     height: 720,
@@ -94,7 +115,16 @@ export default function Marketplace() {
             width={780}
             videoConstraints={videoConstraints}
           />
-
+          <Input
+            type="file"
+            mt="15px"
+            mb="10px"
+            variant="auth"
+            pa="20px"
+            name="file"
+            onChange={changeHandler}
+          />
+          <Button onClick={handleSubmissionVideo}>Submit</Button>
           <Flex direction="column">
             <Flex
               mt="45px"

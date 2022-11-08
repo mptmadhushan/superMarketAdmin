@@ -28,7 +28,7 @@ export default function NFT(props) {
         <Flex position="relative" align="center">
           <Flex
             direction="column"
-            w={{ base: "70%", md: "100%" }}
+            w={{ base: "80%", md: "100%" }}
             me={{ base: "4px", md: "32px", xl: "10px", "3xl": "32px" }}
           >
             <Text
@@ -50,12 +50,12 @@ export default function NFT(props) {
               fontWeight="400"
               me="14px"
             >
-              {author}
+              loyalty points : {author}
             </Text>
           </Flex>
 
           <Text ms="auto" fontWeight="700" fontSize="sm" color={textColorDate}>
-            {date}
+          LKR{date}
           </Text>
         </Flex>
       </Flex>

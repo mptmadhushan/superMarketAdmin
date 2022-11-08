@@ -7,6 +7,7 @@ import {
   Flex,
   Grid,
   Link,
+  Input,
   Text,
   useColorModeValue,
   SimpleGrid,
@@ -44,7 +45,6 @@ export default function Marketplace() {
         handleSubmission(file);
       });
   }, [webcamRef]);
-  
 
   const videoConstraints = {
     width: 1280,
@@ -73,7 +73,8 @@ export default function Marketplace() {
         console.log(res.data);
         setRespo(res.data);
       });
-  };const handleSubmissionFil = () => {
+  };
+  const handleSubmissionFil = () => {
     const formData = new FormData();
 
     // formData.append("image", file);
@@ -104,8 +105,6 @@ export default function Marketplace() {
           flexDirection="column"
           gridArea={{ xl: "1 / 1 / 2 / 3", "2xl": "1 / 1 / 2 / 2" }}
         >
-          <input type="file" name="file" onChange={changeHandler} />
-          <Button onClick={handleSubmissionFil}>Submit</Button>
           <Webcam
             audio={false}
             height={720}
@@ -115,6 +114,17 @@ export default function Marketplace() {
             videoConstraints={videoConstraints}
           />
 
+          <Input
+            type="file"
+            mt="15px"
+            mb="10px"
+            variant="auth"
+            pa="20px"
+            name="file"
+            onChange={changeHandler}
+          />
+
+          <Button onClick={handleSubmissionFil}>Submit</Button>
           <Flex direction="column">
             <Flex
               mt="45px"

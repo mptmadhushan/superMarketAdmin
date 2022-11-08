@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import React from "react";
-import { NavLink ,useHistory} from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 // Chakra imports
 import {
   Box,
@@ -19,8 +19,6 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 // Custom components
-import axios from "axios";
-
 import { HSeparator } from "components/separator/Separator";
 import DefaultAuth from "layouts/auth/Default";
 // Assets
@@ -28,10 +26,13 @@ import illustration from "assets/img/auth/logo.png";
 import { FcGoogle } from "react-icons/fc";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";
+import axios from "axios";
+import { QRCodeCanvas } from "qrcode.react";
 
 function SignIn() {
-  // Chakra color mode
   let history = useHistory();
+
+  // Chakra color mode
   const textColor = useColorModeValue("navy.700", "white");
   const textColorSecondary = "gray.400";
   const textColorDetails = useColorModeValue("navy.700", "secondaryGray.600");
@@ -48,26 +49,29 @@ function SignIn() {
     { bg: "whiteAlpha.200" }
   );
   const [show, setShow] = React.useState(false);
+  const [email, setEmail] = React.useState("");
   const [userName, setUserName] = React.useState("");
   const [password, setPassword] = React.useState("");
   const handleClick = () => setShow(!show);
-  const signIn = async () => {
+
+  const register = async (id) => {
     const user = {
       username: userName,
+      email: email,
       password: password,
+      re_password: password,
     };
     try {
       const response = await axios({
         method: "post",
-        url: `http://ec2-54-242-87-59.compute-1.amazonaws.com:8000/api/v1.0/auth/jwt/create`,
+        url: `http://ec2-54-242-87-59.compute-1.amazonaws.com:8000/api/v1.0/auth/users/`,
         data: user,
         headers: { "Content-Type": "multipart/form-data" },
       });
       console.log("response", response);
-     
-      history.push("/admin/face-mask");
-      // localStorage.setItem("rememberMe", response.data.id);
-      // swal("Registered!", `User id is ${response.data.id}`, "success");
+      setUrl(response.data.id);
+      localStorage.setItem("rememberMe", response.data.id);
+      swal("Registered!", `User id is ${response.data.id}`, "success");
     } catch (error) {
       console.log(error);
       swal("Error!", "Try again", "error");
@@ -90,6 +94,19 @@ function SignIn() {
 
     history.push("/admin/face-mask");
   };
+
+  const qrCodeEncoder = (e) => {
+    setUrl(e.target.value);
+  };
+  const qrcode = (
+    <QRCodeCanvas
+      id="qrCode"
+      value={url}
+      size={300}
+      bgColor={"#fff"}
+      level={"H"}
+    />
+  );
   return (
     <DefaultAuth illustrationBackground={illustration} image={illustration}>
       <Flex
@@ -99,26 +116,12 @@ function SignIn() {
         me="auto"
         h="100%"
         alignItems="start"
-        justifyContent="center"
+        justifyContent="space-around"
         mb={{ base: "30px", md: "60px" }}
         px={{ base: "25px", md: "0px" }}
         mt={{ base: "40px", md: "14vh" }}
-        flexDirection="column"
+        flexDirection="row"
       >
-        <Box me="auto">
-          <Heading color={textColor} fontSize="36px" mb="10px">
-            Sign In
-          </Heading>
-          <Text
-            mb="36px"
-            ms="4px"
-            color={textColorSecondary}
-            fontWeight="400"
-            fontSize="md"
-          >
-            Enter your email and password to sign in!
-          </Text>
-        </Box>
         <Flex
           zIndex="2"
           direction="column"
@@ -130,6 +133,20 @@ function SignIn() {
           me="auto"
           mb={{ base: "20px", md: "auto" }}
         >
+          <Box me="auto">
+            <Heading color={textColor} fontSize="36px" mb="10px">
+              Register
+            </Heading>
+            <Text
+              mb="36px"
+              ms="4px"
+              color={textColorSecondary}
+              fontWeight="400"
+              fontSize="md"
+            >
+              Enter your email and password to Register!
+            </Text>
+          </Box>
           <Button
             fontSize="sm"
             me="0px"
@@ -145,7 +162,7 @@ function SignIn() {
             _focus={googleActive}
           >
             <Icon as={FcGoogle} w="20px" h="20px" me="10px" />
-            Sign in with Google
+            Register with Google
           </Button>
           <Flex align="center" mb="25px">
             <HSeparator />
@@ -163,16 +180,38 @@ function SignIn() {
               color={textColor}
               mb="8px"
             >
-              User Name<Text color={brandStars}>*</Text>
+              Email<Text color={brandStars}>*</Text>
             </FormLabel>
             <Input
               isRequired={true}
               variant="auth"
               fontSize="sm"
               ms={{ base: "0px", md: "0px" }}
+              type="email"
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="mail@simmmple.com"
+              mb="24px"
+              fontWeight="500"
+              size="lg"
+            />
+            <FormLabel
+              display="flex"
+              ms="4px"
+              fontSize="sm"
+              fontWeight="500"
+              color={textColor}
+              mb="8px"
+            >
+              User Name<Text color={brandStars}>*</Text>
+            </FormLabel>
+            <Input
+              isRequired={true}
+              variant="name"
+              fontSize="sm"
+              ms={{ base: "0px", md: "0px" }}
               type="text"
               onChange={(e) => setUserName(e.target.value)}
-              placeholder="user name"
+              placeholder="test user"
               mb="24px"
               fontWeight="500"
               size="lg"
@@ -192,8 +231,8 @@ function SignIn() {
                 fontSize="sm"
                 placeholder="Min. 8 characters"
                 mb="24px"
-                size="lg"
                 onChange={(e) => setPassword(e.target.value)}
+                size="lg"
                 type={show ? "text" : "password"}
                 variant="auth"
               />
@@ -206,44 +245,17 @@ function SignIn() {
                 />
               </InputRightElement>
             </InputGroup>
-            <Flex justifyContent="space-between" align="center" mb="24px">
-              <FormControl display="flex" alignItems="center">
-                <Checkbox
-                  id="remember-login"
-                  colorScheme="brandScheme"
-                  me="10px"
-                />
-                <FormLabel
-                  htmlFor="remember-login"
-                  mb="0"
-                  fontWeight="normal"
-                  color={textColor}
-                  fontSize="sm"
-                >
-                  Keep me logged in
-                </FormLabel>
-              </FormControl>
-              <NavLink to="/auth/forgot-password">
-                <Text
-                  color={textColorBrand}
-                  fontSize="sm"
-                  w="124px"
-                  fontWeight="500"
-                >
-                  Forgot password?
-                </Text>
-              </NavLink>
-            </Flex>
+
             <Button
               fontSize="sm"
               variant="brand"
               fontWeight="500"
               w="100%"
               h="50"
-              onClick={signIn}
               mb="24px"
+              onClick={register}
             >
-              Sign In
+              Register
             </Button>
           </FormControl>
           <Flex
@@ -254,19 +266,62 @@ function SignIn() {
             mt="0px"
           >
             <Text color={textColorDetails} fontWeight="400" fontSize="14px">
-              Not registered yet?
-              <NavLink to="/auth/register">
+              Have an account?
+              <NavLink to="/auth/sign-in">
                 <Text
                   color={textColorBrand}
                   as="span"
                   ms="5px"
                   fontWeight="500"
                 >
-                  Create an Account
+                  sign in
                 </Text>
               </NavLink>
             </Text>
           </Flex>
+        </Flex>{" "}
+        <Flex
+          zIndex="2"
+          direction="column"
+          w={{ base: "100%", md: "420px" }}
+          maxW="100%"
+          background="transparent"
+          borderRadius="15px"
+          mx={{ base: "auto", lg: "unset" }}
+          me="auto"
+          mb={{ base: "20px", md: "auto" }}
+          ml={{ base: "20px", md: "auto" }}
+        >
+          <div style={{ marginLeft: "20px" }}>
+            <Heading color={textColor} fontSize="36px" mb="10px">
+              Enter Customer Id
+            </Heading>
+            <div ref={qrRef}>{qrcode}</div>
+            <div className="input__group">
+              <form onSubmit={downloadQRCode}>
+                <Input
+                  type="text"
+                  mb="10px"
+                  mt="10px"
+                  value={url}
+                  onChange={qrCodeEncoder}
+                  placeholder="user id"
+                />
+                <Button
+                  fontSize="sm"
+                  variant="brand"
+                  fontWeight="500"
+                  w="100%"
+                  h="50"
+                  type="submit"
+                  disabled={!url}
+                  mb="24px"
+                >
+                  Download QR code
+                </Button>
+              </form>
+            </div>
+          </div>
         </Flex>
       </Flex>
     </DefaultAuth>

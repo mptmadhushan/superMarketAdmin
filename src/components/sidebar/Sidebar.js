@@ -41,7 +41,7 @@ function Sidebar(props) {
   return (
     <Box display={{ sm: "none", xl: "block" }} position='fixed' minH='100%'>
       <Box
-        // bg={sidebarBg}
+        bg={sidebarBg}
         transition={variantChange}
         w='300px'
         h='100vh'

@@ -5,8 +5,12 @@ import {
   MdBarChart,
   MdPerson,
   MdHome,
-  MdLock,
+  MdLock,MdFaceRetouchingNatural,
   MdOutlineShoppingCart,
+  MdMasks,
+  MdSmartDisplay,
+  MdHandyman,
+  MdNaturePeople,
 } from "react-icons/md";
 
 // Admin Imports
@@ -19,9 +23,9 @@ import AllProduct from "views/admin/AllOrders";
 
 import DataTables from "views/admin/dataTables";
 
-
 // Auth Imports
 import SignInCentered from "views/auth/signIn";
+import RegisterCentered from "views/auth/register";
 
 const routes = [
   // {
@@ -32,12 +36,25 @@ const routes = [
   //   component: MainDashboard,
   // },
   {
+    name: "Sign In",
+    layout: "/auth",
+    path: "/sign-in",
+    icon: <Icon as={MdLock} width="20px" height="20px" color="inherit" />,
+    component: SignInCentered,
+  }, {
+    name: "Register",
+    layout: "/auth",
+    path: "/register",
+    icon: <Icon as={MdLock} width="20px" height="20px" color="inherit" />,
+    component: RegisterCentered,
+  },
+  {
     name: "Face Mask Detection",
     layout: "/admin",
     path: "/face-mask",
     icon: (
       <Icon
-        as={MdOutlineShoppingCart}
+        as={MdMasks}
         width="20px"
         height="20px"
         color="inherit"
@@ -52,7 +69,7 @@ const routes = [
     path: "/behavior",
     icon: (
       <Icon
-        as={MdOutlineShoppingCart}
+        as={MdHandyman}
         width="20px"
         height="20px"
         color="inherit"
@@ -60,13 +77,14 @@ const routes = [
     ),
     component: Behavior,
     secondary: true,
-  },{
+  },
+  {
     name: "Customer Expression",
     layout: "/admin",
     path: "/expression",
     icon: (
       <Icon
-        as={MdOutlineShoppingCart}
+        as={MdFaceRetouchingNatural}
         width="20px"
         height="20px"
         color="inherit"
@@ -81,7 +99,7 @@ const routes = [
     path: "/crowd",
     icon: (
       <Icon
-        as={MdOutlineShoppingCart}
+        as={MdNaturePeople}
         width="20px"
         height="20px"
         color="inherit"
@@ -119,13 +137,7 @@ const routes = [
   //   icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />,
   //   component: Profile,
   // },
-  // {
-  //   name: "Sign In",
-  //   layout: "/auth",
-  //   path: "/sign-in",
-  //   icon: <Icon as={MdLock} width="20px" height="20px" color="inherit" />,
-  //   component: SignInCentered,
-  // },
+
   // {
   //   name: "RTL Admin",
   //   layout: "/rtl",
