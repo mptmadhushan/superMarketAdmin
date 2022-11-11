@@ -13,10 +13,22 @@ import {
   SimpleGrid,
 } from "@chakra-ui/react";
 import axios from "axios";
+import Modal from "react-modal";
 import WeeklyRevenue from "views/admin/crowd/components/WeeklyRevenue";
 import Webcam from "react-webcam";
 import HistoryItem from "views/admin/AllOrders/components/HistoryItem";
 import swal from "sweetalert";
+const customStyles = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+  },
+};
+
 export default function Marketplace() {
   // Chakra Color Mode
   const textColor = useColorModeValue("secondaryGray.900", "white");
@@ -25,8 +37,9 @@ export default function Marketplace() {
   const [respo, setRespo] = React.useState([]);
   const [orders, setOrders] = React.useState([]);
   const [id, setId] = React.useState([]);
-  const [association, setAsso] = React.useState({});
-  const [discount, setDiscount] = React.useState([]);
+  const [prod, setProduct] = React.useState({});
+  const [total, setTotal] = React.useState("");
+  const [discount, setDiscount] = React.useState('');
   const [qty, setQty] = React.useState("");
   const MINUTE_MS = 6000;
   const textColorDate = useColorModeValue("secondaryGray.600", "white");
@@ -48,6 +61,11 @@ export default function Marketplace() {
         console.log(res);
         console.log(res.data);
         setOrders(res.data.detail.product);
+        var msgTotal = res.data.detail.product.reduce(function (prev, cur) {
+          return prev + parseInt(cur.price);
+        }, 0);
+        setTotal(msgTotal);
+        console.log("Total Messages:", msgTotal);
       });
   };
   const getDiscount = () => {
@@ -64,7 +82,15 @@ export default function Marketplace() {
           `Amount : ${res.data.loyalty_discount}`,
           "success"
         );
-        setDiscount(res.data);
+        var msgTotal = res.data.product_with_discounts.reduce(function (
+          prev,
+          cur
+        ) {
+          return prev + parseInt(cur.discount);
+        },
+        0);
+        const newCal = total - msgTotal;
+        setDiscount(newCal);
       });
   };
   const getProducts = () => {
@@ -78,17 +104,7 @@ export default function Marketplace() {
         setRespo(res.data);
       });
   };
-  const getAssociation = () => {
-    axios
-      .get(
-        "http://ec2-54-242-87-59.compute-1.amazonaws.com:8000/api/v1.0/association-rules"
-      )
-      .then((res) => {
-        console.log(res);
-        console.log(res.data.product_selling_counts);
-        setAsso(res.data);
-      });
-  };
+
   const addOrder = async (id) => {
     const formData = new FormData();
     formData.append("product_id", id);
@@ -112,6 +128,16 @@ export default function Marketplace() {
     { bg: "white", boxShadow: "0px 40px 58px -20px rgba(112, 144, 176, 0.12)" },
     { bg: "navy.700", boxShadow: "unset" }
   );
+  const [modalIsOpen, setIsOpen] = React.useState(false);
+
+  function openModal(item) {
+    setProduct(item);
+    setIsOpen(true);
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+  }
   return (
     <Box pt={{ base: "180px", md: "80px", xl: "80px" }}>
       {/* Main Fields */}
@@ -121,123 +147,42 @@ export default function Marketplace() {
         gap={{ base: "20px", xl: "20px" }}
         display={{ base: "block", xl: "grid" }}
       >
-        <div>
-          <Button
-            mt="82px"
-            onClick={() => {
-              getAssociation();
-            }}
-            fontSize="sm"
-            fontWeight="500"
-            variant="brand"
-            borderRadius="7px"
-          >
-            Association Rules
-          </Button>
-          {association && (
-            <div>
-              <Flex>
-                {/* <HistoryItem name={text.name} date={text.price} /> */}
-                <Card
-                  _hover={bgItem}
-                  bg="transparent"
-                  boxShadow="unset"
-                  px="24px"
-                  py="21px"
-                  transition="0.2s linear"
-                >
-                  {association && (
-                    <Flex direction={{ base: "column" }} justify="center">
-                      <Flex position="relative" align="center">
-                        <Flex
-                          direction="column"
-                          w={{ base: "90%", md: "100%" }}
-                          me={{
-                            base: "4px",
-                            md: "32px",
-                            xl: "10px",
-                            "3xl": "32px",
-                          }}
-                        >
-                          {association.detail && (
-                            <Text
-                              color={textColor}
-                              fontSize={{
-                                base: "md",
-                              }}
-                              mb="5px"
-                              fontWeight="bold"
-                              me="14px"
-                            >
-                              Antecedents
-                            </Text>
-                          )}
-                          {association.detail?.antecedents.map((text) => (
-                            <Text
-                              color="secondaryGray.600"
-                              fontSize={{
-                                base: "sm",
-                              }}
-                              ml="5px"
-                              fontWeight="400"
-                              me="14px"
-                            >
-                              - {text}
-                            </Text>
-                          ))}
-                          {/* <Flex
-                            direction="row"
-                            w={{ base: "90%", md: "100%" }}
-                            me={{
-                              base: "4px",
-                              md: "32px",
-                              xl: "10px",
-                              "3xl": "32px",
-                            }}
-                          >
-                            {association.detail?.antecedents.map((text) => (
-                              <Text
-                                color="secondaryGray.600"
-                                fontSize={{
-                                  base: "sm",
-                                }}
-                                ml="5px"
-                                fontWeight="400"
-                                me="14px"
-                              >
-                                - {text}
-                              </Text>
-                            ))}
-                            {association.product_selling_counts?.count.map(
-                              (text) => (
-                                <Text
-                                  color="secondaryGray.600"
-                                  fontSize={{
-                                    base: "sm",
-                                  }}
-                                  ml="5px"
-                                  fontWeight="400"
-                                  me="14px"
-                                >
-                                  - {text}
-                                </Text>
-                              )
-                            )}
-                          </Flex> */}
-                        </Flex>
-                      </Flex>
-                
-                    </Flex>
-                  )}
-                </Card>
-              </Flex>
-            </div>
-          )}
-        </div>
         <Flex
           flexDirection="column"
-          gridArea={{ xl: "1 / 1 / 2 / 3", "2xl": "1 / 1 / 2 / 2" }}
+          gridArea={{ xl: "1 / 1 / 1 / 4", "2xl": "1 / 1 / 2 / 2" }}
         >
+          <Modal
+            isOpen={modalIsOpen}
+            onRequestClose={closeModal}
+            style={customStyles}
+            contentLabel="Example Modal"
+          >
+            <Text color={textColor} fontSize="2xl" ms="24px" fontWeight="700">
+              Name : {prod.name}
+            </Text>{" "}
+            <div dangerouslySetInnerHTML={{ __html: prod.description }} />
+            <Text color={textColor} fontSize="1xl" ms="24px" fontWeight="700">
+              discount : {prod.discount}
+            </Text>
+            <Text color={textColor} fontSize="1xl" ms="24px" fontWeight="700">
+              loyalty points : {prod.loyalty_points}
+            </Text>
+            <Text color={textColor} fontSize="1xl" ms="24px" fontWeight="700">
+              loyalty price : {prod.price}
+            </Text>
+            <Button
+              mt="18px"
+              ml="18px"
+              fontSize="sm"
+              w="50%"
+              variant="brand"
+              fontWeight="500"
+              borderRadius="7px"
+              onClick={closeModal}
+            >
+              close
+            </Button>
+          </Modal>
           <Flex direction="row">
             <Flex
               mt="45px"
@@ -280,6 +225,20 @@ export default function Marketplace() {
                 mt="18px"
                 ml="18px"
                 onClick={() => {
+                  openModal(text);
+                }}
+                fontSize="sm"
+                w="50%"
+                variant="brand"
+                fontWeight="500"
+                borderRadius="7px"
+              >
+                View
+              </Button>{" "}
+              <Button
+                mt="18px"
+                ml="18px"
+                onClick={() => {
                   addOrder(text.id);
                 }}
                 fontSize="sm"
@@ -288,7 +247,7 @@ export default function Marketplace() {
                 fontWeight="500"
                 borderRadius="7px"
               >
-                Add Product
+                Add to cart
               </Button>
             </Flex>
           ))}
@@ -387,7 +346,7 @@ export default function Marketplace() {
                         fontWeight="bold"
                         me="14px"
                       >
-                        Discount :{text.price}
+                        Discount :{text.discount}
                       </Text>
                     </Flex>
                   </Flex>
@@ -395,21 +354,35 @@ export default function Marketplace() {
               </Card>
             </Flex>
           ))}
+
           {orders.length > 0 && (
-            <Button
-              mt="10px"
-              onClick={() => {
-                getDiscount();
-              }}
-              fontSize="sm"
-              fontWeight="500"
-              variant="brand"
-              borderRadius="7px"
-            >
-              Get Discount
-            </Button>
+            <div>
+              <Text
+                color={textColor}
+                fontSize={{
+                  base: "md",
+                }}
+                mb="5px"
+                fontWeight="bold"
+                me="14px"
+              >
+                Total :{total}
+              </Text>
+              <Button
+                mt="10px"
+                onClick={() => {
+                  getDiscount();
+                }}
+                fontSize="sm"
+                fontWeight="500"
+                variant="brand"
+                borderRadius="7px"
+              >
+                Get Discount
+              </Button>
+            </div>
           )}
-          {discount.loyalty_discount && (
+          {discount && (
             <Text
               color={textColor}
               fontSize={{
@@ -421,7 +394,7 @@ export default function Marketplace() {
               fontWeight="bold"
               me="24px"
             >
-              loyalty discount: {discount.loyalty_discount}
+              Sub Total: {discount}
             </Text>
           )}
         </Flex>

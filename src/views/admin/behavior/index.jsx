@@ -72,7 +72,7 @@ export default function Marketplace() {
   const handleSubmissionVideo = () => {
     const formData = new FormData();
 
-    formData.append("camera_id", 1);
+    formData.append("camera_id ", 1);
     formData.append("video", selectedFile);
 
     axios

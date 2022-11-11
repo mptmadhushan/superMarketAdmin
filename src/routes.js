@@ -20,6 +20,7 @@ import Behavior from "views/admin/behavior";
 import Crowd from "views/admin/crowd";
 import Expression from "views/admin/expresion";
 import AllProduct from "views/admin/AllOrders";
+import AssociationRules from "views/admin/AssociationRules";
 
 import DataTables from "views/admin/dataTables";
 
@@ -121,6 +122,20 @@ const routes = [
       />
     ),
     component: AllProduct,
+    secondary: true,
+  }, {
+    name: "Association Rules",
+    layout: "/admin",
+    path: "/association-rules",
+    icon: (
+      <Icon
+        as={MdOutlineShoppingCart}
+        width="20px"
+        height="20px"
+        color="inherit"
+      />
+    ),
+    component: AssociationRules,
     secondary: true,
   },
   // {
