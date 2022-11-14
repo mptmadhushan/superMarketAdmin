@@ -153,6 +153,62 @@ export default function Marketplace() {
                                 fontWeight="bold"
                                 me="14px"
                               >
+                                Item
+                              </Text>
+                            )}
+                            {association.product_selling_counts?.item.map((text) => (
+                              <Text
+                                color="secondaryGray.600"
+                                fontSize={{
+                                  base: "sm",
+                                }}
+                                ml="5px"
+                                fontWeight="400"
+                                me="4px"
+                              >
+                                {text}
+                              </Text>
+                            ))}
+                          </div>{" "}
+                          <div>
+                            {association.detail && (
+                              <Text
+                                color={textColor}
+                                fontSize={{
+                                  base: "md",
+                                }}
+                                mb="5px"
+                                fontWeight="bold"
+                                me="14px"
+                              >
+                                Count
+                              </Text>
+                            )}
+                            {association.product_selling_counts?.count.map((text) => (
+                              <Text
+                                color="secondaryGray.600"
+                                fontSize={{
+                                  base: "sm",
+                                }}
+                                ml="5px"
+                                fontWeight="400"
+                                me="4px"
+                              >
+                                {text}
+                              </Text>
+                            ))}
+                          </div>{" "}
+                          <div>
+                            {association.detail && (
+                              <Text
+                                color={textColor}
+                                fontSize={{
+                                  base: "md",
+                                }}
+                                mb="5px"
+                                fontWeight="bold"
+                                me="14px"
+                              >
                                 Antecedents
                               </Text>
                             )}

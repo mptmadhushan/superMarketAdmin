@@ -112,6 +112,13 @@ export default function Marketplace() {
               </Text>
             </Flex>
           </Flex>
+          {/* <ReactApexChart
+            options={this.state.chartOptions}
+            series={this.state.chartData}
+            type="line"
+            width="100%"
+            height="100%"
+          /> */}
           <WeeklyRevenue />
         </Flex>
       </Grid>

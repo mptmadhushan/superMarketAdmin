@@ -157,7 +157,7 @@ export default function Banner(props) {
               Panel 4
             </Text>
           </Flex>
-        </MenuItem>
+      </MenuItem>
       </MenuList>
     </Menu>
   );

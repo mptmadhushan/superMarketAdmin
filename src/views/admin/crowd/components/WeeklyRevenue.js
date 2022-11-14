@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import Card from "components/card/Card.js";
 // Custom components
-import BarChart from "components/charts/BarChart";
+import LineChart from "components/charts/LineChart";
 import React from "react";
 import {
   barChartDataConsumption,
@@ -60,7 +60,7 @@ export default function WeeklyRevenue(props) {
       </Flex>
 
       <Box h='240px' mt='auto'>
-        <BarChart
+        <LineChart
           chartData={barChartDataConsumption}
           chartOptions={barChartOptionsConsumption}
         />

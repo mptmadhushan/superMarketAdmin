@@ -35,7 +35,7 @@ export default function Marketplace() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      // capture();
+      capture();
     }, MINUTE_MS);
 
     return () => clearInterval(interval);
