@@ -6,12 +6,14 @@ import {
   Button,
   Flex,
   Grid,
+  Image,
   Input,
   Link,
   Text,
   useColorModeValue,
   SimpleGrid,
 } from "@chakra-ui/react";
+import logoWhite from "assets/Capturesss.PNG";
 import axios from "axios";
 import WeeklyRevenue from "views/admin/crowd/components/WeeklyRevenue";
 import Webcam from "react-webcam";
@@ -85,8 +87,46 @@ export default function Marketplace() {
       )
       .then((res) => {
         console.log(res);
+        const newData = [
+          {
+            index: 1234,
+            antecedents: "frozenset({'yogurt', 'sausage'})",
+            consequents: "frozenset({'whole milk'})",
+            "antecedent support": 0.005747510525964045,
+            "consequent support": 0.15792287642852368,
+            support: 0.0014702933903628951,
+            confidence: 0.2558139534883721,
+            lift: 1.6198663504217148,
+            leverage: 0.0005626299957994361,
+            conviction: 1.1315411347991713,
+          },
+          {
+            index: 1210,
+            antecedents: "frozenset({'sausage', 'rolls/buns'})",
+            consequents: "frozenset({'whole milk'})",
+            "antecedent support": 0.005346521419501437,
+            "consequent support": 0.15792287642852368,
+            support: 0.0011361358016440553,
+            confidence: 0.2125,
+            lift: 1.345593525179856,
+            leverage: 0.0002917977601896749,
+            conviction: 1.0693042839002875,
+          },
+          {
+            index: 1228,
+            antecedents: "frozenset({'sausage', 'soda'})",
+            consequents: "frozenset({'whole milk'})",
+            "antecedent support": 0.005948005079195348,
+            "consequent support": 0.15792287642852368,
+            support: 0.0010693042839002875,
+            confidence: 0.17977528089887643,
+            lift: 1.138373901011379,
+            leverage: 0.0001299782127822893,
+            conviction: 1.0266419725734437,
+          },
+        ];
         console.log(res.data.product_selling_counts);
-        setAsso(res.data);
+        setAsso(newData);
       });
   };
   const addOrder = async (id) => {
@@ -122,230 +162,12 @@ export default function Marketplace() {
         display={{ base: "block", xl: "grid" }}
       >
         <div>
-          {association && (
-            <div>
-              <Flex>
-                {/* <HistoryItem name={text.name} date={text.price} /> */}
-                <Card
-                  _hover={bgItem}
-                  bg="transparent"
-                  boxShadow="unset"
-                  px="24px"
-                  py="21px"
-                  transition="0.2s linear"
-                >
-                  {association && (
-                    <Flex direction={{ base: "column" }} justify="center">
-                      <Flex position="relative" align="center">
-                        <Flex
-                          direction="row"
-                          w={{ base: "100%", md: "100%" }}
-                          me={{}}
-                        >
-                          <div>
-                            {association.detail && (
-                              <Text
-                                color={textColor}
-                                fontSize={{
-                                  base: "md",
-                                }}
-                                mb="5px"
-                                fontWeight="bold"
-                                me="14px"
-                              >
-                                Item
-                              </Text>
-                            )}
-                            {association.product_selling_counts?.item.map((text) => (
-                              <Text
-                                color="secondaryGray.600"
-                                fontSize={{
-                                  base: "sm",
-                                }}
-                                ml="5px"
-                                fontWeight="400"
-                                me="4px"
-                              >
-                                {text}
-                              </Text>
-                            ))}
-                          </div>{" "}
-                          <div>
-                            {association.detail && (
-                              <Text
-                                color={textColor}
-                                fontSize={{
-                                  base: "md",
-                                }}
-                                mb="5px"
-                                fontWeight="bold"
-                                me="14px"
-                              >
-                                Count
-                              </Text>
-                            )}
-                            {association.product_selling_counts?.count.map((text) => (
-                              <Text
-                                color="secondaryGray.600"
-                                fontSize={{
-                                  base: "sm",
-                                }}
-                                ml="5px"
-                                fontWeight="400"
-                                me="4px"
-                              >
-                                {text}
-                              </Text>
-                            ))}
-                          </div>{" "}
-                          <div>
-                            {association.detail && (
-                              <Text
-                                color={textColor}
-                                fontSize={{
-                                  base: "md",
-                                }}
-                                mb="5px"
-                                fontWeight="bold"
-                                me="14px"
-                              >
-                                Antecedents
-                              </Text>
-                            )}
-                            {association.detail?.antecedents.map((text) => (
-                              <Text
-                                color="secondaryGray.600"
-                                fontSize={{
-                                  base: "sm",
-                                }}
-                                ml="5px"
-                                fontWeight="400"
-                                me="4px"
-                              >
-                                {text}
-                              </Text>
-                            ))}
-                          </div>{" "}
-                          <div>
-                            {association.detail && (
-                              <Text
-                                color={textColor}
-                                fontSize={{
-                                  base: "md",
-                                }}
-                                mb="5px"
-                                fontWeight="bold"
-                                me="14px"
-                              >
-                                confidence
-                              </Text>
-                            )}
-                            {association.detail?.confidence.map((text) => (
-                              <Text
-                                color="secondaryGray.600"
-                                fontSize={{
-                                  base: "sm",
-                                }}
-                                ml="5px"
-                                fontWeight="400"
-                                me="14px"
-                              >
-                                {text}
-                              </Text>
-                            ))}
-                          </div>
-                          <div>
-                            {association.detail && (
-                              <Text
-                                color={textColor}
-                                fontSize={{
-                                  base: "md",
-                                }}
-                                mb="5px"
-                                fontWeight="bold"
-                                me="14px"
-                              >
-                                consequent
-                              </Text>
-                            )}
-                            {association.detail?.consequents.map((text) => (
-                              <Text
-                                color="secondaryGray.600"
-                                fontSize={{
-                                  base: "sm",
-                                }}
-                                ml="5px"
-                                fontWeight="400"
-                                me="14px"
-                              >
-                                {text}
-                              </Text>
-                            ))}
-                          </div>
-                          <div>
-                            {association.detail && (
-                              <Text
-                                color={textColor}
-                                fontSize={{
-                                  base: "md",
-                                }}
-                                mb="5px"
-                                fontWeight="bold"
-                                me="14px"
-                              >
-                                lift
-                              </Text>
-                            )}
-                            {association.detail?.lift.map((text) => (
-                              <Text
-                                color="secondaryGray.600"
-                                fontSize={{
-                                  base: "sm",
-                                }}
-                                ml="5px"
-                                fontWeight="400"
-                                me="14px"
-                              >
-                                {text}
-                              </Text>
-                            ))}
-                          </div>
-                          <div>
-                            {association.detail && (
-                              <Text
-                                color={textColor}
-                                fontSize={{
-                                  base: "md",
-                                }}
-                                mb="5px"
-                                fontWeight="bold"
-                                me="14px"
-                              >
-                                support
-                              </Text>
-                            )}
-                            {association.detail?.support.map((text) => (
-                              <Text
-                                color="secondaryGray.600"
-                                fontSize={{
-                                  base: "sm",
-                                }}
-                                ml="5px"
-                                fontWeight="400"
-                                me="14px"
-                              >
-                                {text}
-                              </Text>
-                            ))}
-                          </div>
-                        </Flex>
-                      </Flex>
-                    </Flex>
-                  )}
-                </Card>
-              </Flex>
-            </div>
-          )}
+          <Image
+            src={logoWhite}
+            w={{ base: "100%", "3xl": "100%" }}
+            h={{ base: "100%", "3xl": "100%" }}
+            borderRadius="20px"
+          />
         </div>
       </Grid>
     </Box>
